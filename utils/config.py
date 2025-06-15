@@ -47,5 +47,11 @@ class Config:
         with open(filename, 'w') as f:
             yaml.dump(self.data, f)
 
-# Global config instance
-config = Config()
+if __name__ == "__main__":
+    config = Config()
+    print("Configuration loaded successfully.")
+    print(f"Simulation steps: {config.steps}")
+    print(f"Temperature range: {config.T_start} K to {config.T_end} K")
+    print(f"Lattice basis vectors: {config.basis_vectors}")
+    print(f"Potential epsilon: {config.epsilon}, sigma: {config.sigma}")
+    config.save("config_saved.yaml")  # Save the configuration to a file if needed

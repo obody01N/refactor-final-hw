@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.stats import linregress
+import matplotlib.pyplot as plt
 
 def msd(system, initial_positions):
     N = system.N
@@ -26,3 +27,32 @@ def compute_diffusion_coefficient(msd_list, dt, interval, fit_start_ratio=0.5):
 
     D = slope / 6.0
     return D, slope, intercept, r_value**2
+
+def compute_diffusion_coefficient_2(msd_list, dt):
+    time_steps = np.arange(len(msd_list)) * dt
+    diffusion_coefficient = msd_list[1:] / (6 * time_steps[1:])  # 6D for 3D space
+    return diffusion_coefficient
+
+def plot_msd(msd_list, steps):
+    """绘制 MSD 曲线"""
+    times = np.arange(0, steps, 1)
+    # plt.figure(figsize=(10, 6))
+    plt.plot(times, msd_list, label='MSD', color='blue')
+    plt.xlabel('Time (10fs)')
+    plt.ylabel('Mean Square Displacement (Å²)')
+    plt.title('Mean Square Displacement vs Time')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+def plot_diffusion_coefficient(diffusion_coefficient, steps):
+    """绘制扩散系数随时间变化的图像"""
+    times = np.arange(0, steps, 1)
+    # plt.figure(figsize=(10, 6))
+    plt.plot(times, diffusion_coefficient, label='Diffusion Coefficient', color='red')
+    plt.xlabel('Time (fs)')
+    plt.ylabel('Diffusion Coefficient (Å²/fs)')
+    plt.title('Diffusion Coefficient vs Time')
+    plt.legend()
+    plt.grid()
+    plt.show()

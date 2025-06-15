@@ -1,4 +1,6 @@
-from constants import amu, angstrom, eV, k_B, mass_kg
+# import sys
+# print(sys.path)
+# from constants import k_B, mass_kg
 import numpy as np
 
 def initialize_velocity_distribution(temperature):
@@ -9,6 +11,9 @@ def initialize_velocity_distribution(temperature):
     - temperature: Temperature in Kelvin
     
     """
+    k_B = 1.380649e-23  # Boltzmann constant in J/K
+    mass=12
+    mass_kg = mass * 1.66053906660e-27  # Convert mass from amu to kg
     std_dev = np.sqrt(k_B * temperature / mass_kg)
     velocities = np.random.normal(0, std_dev, size=(3,))  # 3D velocity vector
     mean_velocity = np.mean(velocities)
