@@ -1,14 +1,15 @@
 simulation:
   dimensions: [6, 6, 4]  # nx, ny, nz
   timestep: 1e-14        # dt in seconds
-  steps: 10
-  temperature: 11.0      # Kelvin
+  steps: 50
+  temperature: [10.0, 300.0]     # Kelvin
   mass: 12.0             # amu
   boundary_condition: 3   # 0=none, 1=periodic, 2=fixed, 3=lattice periodic
   track_particle: 1       # Particle ID to track
   write_output: true
 
 potentials:
+  two_potentials: true
   lj:
     epsilon: 0.0026       # eV
     sigma: 3.440          # Å
@@ -29,8 +30,8 @@ lattice:
   basis_atoms:
     - [0.0, 0.0, 0.25]
     - [0.0, 0.0, 0.75]
-    - [1/3, 2/3, 0.25]
-    - [2/3, 1/3, 0.75]
+    - [0.3333333, 0.6666667, 0.25]
+    - [0.6666667, 0.3333333, 0.75]
 
 analysis:
   rdf:

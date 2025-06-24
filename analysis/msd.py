@@ -19,7 +19,7 @@ def compute_diffusion_coefficient(msd_list, dt, interval, fit_start_ratio=0.5):
     interval: 每多少步存一次 msd
     fit_start_ratio: 从后半段开始拟合（避免初始非线性段）
     """
-    times = np.array([i * dt * interval for i in range(len(msd_list))])
+    times = np.array([i * dt * interval for i in range(1,len(msd_list))])
     msd_array = np.array(msd_list)
 
     start = int(len(times) * fit_start_ratio)  # 拟合起点
@@ -28,12 +28,12 @@ def compute_diffusion_coefficient(msd_list, dt, interval, fit_start_ratio=0.5):
     D = slope / 6.0
     return D, slope, intercept, r_value**2
 
-def compute_diffusion_coefficient_2(msd_list, dt):
-    time_steps = np.arange(len(msd_list)) * dt
+def compute_diffusion_coefficient_2(msd_list):
+    time_steps = np.arange(len(msd_list))
     diffusion_coefficient = msd_list[1:] / (6 * time_steps[1:])  # 6D for 3D space
-    return diffusion_coefficient
+    return diffusion_coefficient # MSD/10fs
 
-def plot_msd(msd_list, steps):
+def plot_msd(msd_list, steps, temperature):
     """绘制 MSD 曲线"""
     times = np.arange(0, steps, 1)
     # plt.figure(figsize=(10, 6))
@@ -43,16 +43,18 @@ def plot_msd(msd_list, steps):
     plt.title('Mean Square Displacement vs Time')
     plt.legend()
     plt.grid()
+    plt.savefig(f"result\\{temperature}K\\MSD VS time (10fs).png")
     plt.show()
 
-def plot_diffusion_coefficient(diffusion_coefficient, steps):
+def plot_diffusion_coefficient(diffusion_coefficient, steps, temperature):
     """绘制扩散系数随时间变化的图像"""
-    times = np.arange(0, steps, 1)
+    times = np.arange(1, steps, 1)
     # plt.figure(figsize=(10, 6))
     plt.plot(times, diffusion_coefficient, label='Diffusion Coefficient', color='red')
-    plt.xlabel('Time (fs)')
-    plt.ylabel('Diffusion Coefficient (Å²/fs)')
+    plt.xlabel('Time (10fs)')
+    plt.ylabel('Diffusion Coefficient (0.1Å²/fs)')
     plt.title('Diffusion Coefficient vs Time')
     plt.legend()
     plt.grid()
+    plt.savefig(f"result\\{temperature}K\\Diffusion Coefficient VS time (10fs).png")
     plt.show()

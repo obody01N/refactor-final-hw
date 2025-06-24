@@ -1,4 +1,5 @@
 import numpy as np
+from utils.constants import a_unit
 
 def smooth_cutoff(r, ro, rc):
     """Cubic smooth cutoff function for LJ potential between ro and rc."""
@@ -48,7 +49,8 @@ def compute_forces(positions, box_size, **kwargs):
     # 提取参数
     cutoff = kwargs.get('cutoff', 3.0)  # 默认截断距离
     cutoff_face = kwargs.get('cutoff_face', 1.0)  # 面内截断距离
-    two_potential = kwargs.get('two_potential', False)  # 是否使用两种势能
+    two_potentials = kwargs.get('two_potentials', True)  # 是否使用两种势能
+    # print(f"Using two potentials: {two_potentials}")
     epsilon = kwargs.get('epsilon', 0.0103)  # eV
     sigma = kwargs.get('sigma', 3.4)  # Angstrom
     a = kwargs.get('a', 1.0)  # Morse势参数
@@ -70,16 +72,18 @@ def compute_forces(positions, box_size, **kwargs):
             rij = rij - np.round(rij / box_size) * box_size  # PBC处理
             r = np.linalg.norm(rij)
             if r < cutoff:
-                if np.abs(rij[2]) < cutoff_face and two_potential == True: # 面内共价键用Morse势近似
+                if np.abs(rij[2]) < cutoff_face and two_potentials == True: # 面内共价键用Morse势近似
                     force_scalar = morse_force_scalar(r, D_e, a, r_e)
                     potential = morse_potential(r, D_e, a, r_e)
                 else: # 面间相互作用用LJ势描述
-                    force_scalar = lj_force_scalar * smooth_cutoff(r, ro, rc)
+                    if (r==0):
+                        print(f"Warning: Zero distance between particles {i} and {j}. Setting force to zero.")
+                    force_scalar = lj_force_scalar(r, epsilon, sigma, ro, rc) * smooth_cutoff(r, ro, rc)
                     potential = lj_potential(r, epsilon, sigma, ro, rc)
                 current_potential_energy += potential
                 force_vector = force_scalar * rij
                 forces[i, j] = force_vector
                 forces[j, i] = -force_vector
-                accelerations[i] += force_vector / mass
-                accelerations[j] -= force_vector / mass
-    return forces, potential # eV/Å
+                accelerations[i] += force_vector / mass * a_unit
+                accelerations[j] -= force_vector / mass * a_unit
+    return forces, accelerations, current_potential_energy # eV/Å

@@ -2,7 +2,7 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_rdf(animation_pos):
+def plot_rdf(animation_pos, temperature):
     # === 设置参数 ===
     r_max = 40      # 最大距离（Å）
     dr = 0.1       # bin 宽度
@@ -60,4 +60,5 @@ def plot_rdf(animation_pos):
     axs[1, 1].legend()
 
     plt.tight_layout()
+    plt.savefig(f"result\\{temperature}K\\Radial Distribution Function.png")
     plt.show()

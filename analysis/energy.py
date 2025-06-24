@@ -8,7 +8,7 @@ def calculate_kinetic_energy(positions, velocity):
     kinetic_energy *= amu * angstrom**2 / (dt**2 * eV)  # Convert to eV
     return kinetic_energy
 
-def plot_energy(kinetic_energy, potential_energy, total_energy):
+def plot_energy(kinetic_energy, potential_energy, total_energy, temperature):
     """Plot kinetic, potential and total energies"""
     import matplotlib.pyplot as plt
     plt.figure(figsize=(10, 6))
@@ -20,4 +20,5 @@ def plot_energy(kinetic_energy, potential_energy, total_energy):
     plt.title('Energy vs Time Step')
     plt.legend()
     plt.grid()
+    plt.savefig(f"result\\{temperature}K\\Energy vs Time Step.png")
     plt.show()
